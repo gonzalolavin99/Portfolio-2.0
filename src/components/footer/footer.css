@@ -1,0 +1,9 @@
+.footer-container {
+  color: white;
+  background-color: rgb(105, 105, 105);
+}
+
+.section-container {
+  display: flex;
+  justify-content: space-around;
+}

@@ -41,7 +41,7 @@ const Bar = () => {
 
     
   return (
-    <AppBar position="static"  sx={{bgcolor:'grey.800'}}>
+    <AppBar position="static"  sx={{bgcolor:'#333333'}} className='appbar'>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
