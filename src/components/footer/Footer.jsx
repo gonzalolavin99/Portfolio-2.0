@@ -82,8 +82,8 @@ const contactoItems = [
         rel="noopener noreferrer"
         href="https://www.antgroup.com"
       >
-        1st menu item
-      </a>
+        Whatsapp 
+      </a>  /*Aquí debe ir el ícono de whatsapp*/ 
     ),
     key: "0",
   },
@@ -94,8 +94,8 @@ const contactoItems = [
         rel="noopener noreferrer"
         href="https://www.aliyun.com"
       >
-        2nd menu item
-      </a>
+        Correo electrónico
+      </a> /*Ícono Gmail*/
     ),
     key: "1",
   },

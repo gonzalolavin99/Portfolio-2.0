@@ -7,7 +7,6 @@ import 'antd/dist/reset.css'; // Importa el CSS de Ant Design
         
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
