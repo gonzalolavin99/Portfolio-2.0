@@ -41,7 +41,7 @@ const Bar = () => {
 
     
   return (
-    <AppBar position="static"  sx={{bgcolor:'#333333'}} className='appbar'>
+    <AppBar position="static"  sx={{bgcolor:'grey'}} className='appbar'>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
@@ -56,7 +56,7 @@ const Bar = () => {
               fontFamily: 'monospace',
               fontWeight: 700,
               letterSpacing: '.3rem',
-              color: 'inherit',
+              color: 'black',
               textDecoration: 'none',
             }}
           >
@@ -70,7 +70,7 @@ const Bar = () => {
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
-              color="inherit"
+              color="black"
             >
               <MenuIcon />
             </IconButton>
@@ -112,7 +112,7 @@ const Bar = () => {
               fontFamily: 'monospace',
               fontWeight: 700,
               letterSpacing: '.3rem',
-              color: 'inherit',
+              color: 'black',
               textDecoration: 'none',
             }}
           >
@@ -123,7 +123,7 @@ const Bar = () => {
               <Button
                 key={page}
                 onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block', '&:hover':{
+                sx={{ my: 2, color: 'black', display: 'block', '&:hover':{
                   backgroundColor:"#5C5C5C"
                 } }}
               >

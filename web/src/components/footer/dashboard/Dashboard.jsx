@@ -16,6 +16,13 @@ const Dashboard = () => {
             technologies. I love creating beautiful and functional websites that
             provide a great user experience.
           </p>
+
+          <div className="tech-container">
+            <p>React</p>
+            <p>Javascript</p>
+            <p>Node.JS</p>
+            <p>Express.JS</p>
+          </div>
         </div>
       </div>
       <div className="cv-container">
