@@ -7,7 +7,7 @@ const Dashboard = () => {
     <div className="container-dash">
       <div className="me-container">
         <div className="dash-img">
-          <img src={foto_cv} alt="foto Gonzalo Lavín" />
+          <img  className="cv-img" src={foto_cv} alt="foto Gonzalo Lavín" />
         </div>
         <div>
           <h2>Gonzalo Lavín</h2>
@@ -26,6 +26,7 @@ const Dashboard = () => {
         </div>
       </div>
       <div className="cv-container">
+        <p className="tech-container">About Me</p>
         <p>
           I'm a self-taught web developer with a passion for creating beautiful
           and functional websites. I've been working in the industry for the
@@ -33,6 +34,7 @@ const Dashboard = () => {
           projects, from small personal websites to large-scale web
           applications.
         </p>
+        <button className="cv-button">Download CV</button>
       </div>
     </div>
   );

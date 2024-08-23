@@ -5,21 +5,42 @@
   justify-content: center;
 }
 
-img {
+.dash-img img {
   width: 10%;
   border-radius: 50%;
+  margin: 1em;
 }
 
-.tech-container{
+.me-container {
+  padding: 1em;
+}
+
+.tech-container {
   display: flex;
   justify-content: center;
-  
+  margin: 1em;
 }
-.tech-container p{
-  border-radius: 10px; 
-  border:  grey; 
+
+.tech-container p {
+  border-radius: 10px;
   padding: 0.5em;
   margin: 0.5rem;
   background-color: rgb(230, 230, 230);
-  
-};
+}
+
+.cv-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color:rgb(100, 100, 100) ;
+
+}
+
+.cv-button {
+  background-color: black;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 10em;
+  padding: 0.4;
+}
