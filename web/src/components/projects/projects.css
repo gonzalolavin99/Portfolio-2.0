@@ -1,37 +1,38 @@
 .projects-container {
-    background-color: rgb(189, 189, 189);
-    padding: 20px;
-  }
-  
-  .title {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .project-slide {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    text-align: center;
-  }
-  
-  .project-slide img {
-    width: 100%;
-    height: auto;
-    margin-bottom: 15px;
-  }
-  
-  .view-project {
-    background-color: black;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  /* Estilos para las flechas del carrusel */
-  .slick-prev:before,
-  .slick-next:before {
-    color: black;
-  }
+  background-color: rgb(189, 189, 189);
+  padding: 5em;
+  /* margin: ; */
+}
+
+.title {
+  text-align: center;
+  margin: 3em;
+}
+
+.project-slide {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.project-slide img {
+  width: 100%;
+  height: auto;
+  margin-bottom: 15px;
+}
+
+.view-project {
+  background-color: black;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Estilos para las flechas del carrusel */
+.slick-prev:before,
+.slick-next:before {
+  color: black;
+}
