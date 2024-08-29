@@ -8,14 +8,22 @@ const Projects = () => {
   const projects = [
     {
       id: 1,
+      title: "Marketplace",
+      description: "A front-end marketplace application.",
+      link: "https://front-marketplace.onrender.com/"
+    },
+    {
+      id: 2,
       title: "Project 1",
       description: "A web application that helps users manage their tasks and projects.",
+      link: "#" 
     },
-{
-    id: 2,
-    title: "Project 2",
-    description:"Another Web"
-}
+    {
+      id: 3,
+      title: "Project 2",
+      description: "Another Web",
+      link: "#" 
+    }
     
   ];
 
@@ -30,7 +38,7 @@ const Projects = () => {
   return (
     <div className='projects-container'>
       <div className='title'>
-        <h1>My Projects</h1>
+        <h1><strong>My Projects</strong></h1>
         <h4>Check out some of the projects I've worked on over the years.</h4>
       </div>
       <Slider {...settings}>
@@ -39,7 +47,9 @@ const Projects = () => {
             <img src={project.image} alt={project.title} />
             <h3>{project.title}</h3>
             <p>{project.description}</p>
-            <button className="view-project">View Project</button>
+            <a href={project.link} target="_blank" rel="noopener noreferrer">
+              <button className="view-project">View Project</button>
+            </a>
           </div>
         ))}
       </Slider>

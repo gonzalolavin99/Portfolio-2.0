@@ -7,10 +7,10 @@ const Dashboard = () => {
     <div className="container-dash">
       <div className="me-container">
         <div className="dash-img">
-          <img  className="cv-img" src={foto_cv} alt="foto Gonzalo Lavín" />
+          <img className="cv-img" src={foto_cv} alt="foto Gonzalo Lavín" />
         </div>
         <div>
-          <h2>Gonzalo Lavín</h2>
+          <h2><strong>Gonzalo Lavín</strong></h2>
           <p>
             I'm a passionate web developer with a strong background in frontend
             technologies. I love creating beautiful and functional websites that
@@ -22,12 +22,13 @@ const Dashboard = () => {
             <p>Javascript</p>
             <p>Node.JS</p>
             <p>Express.JS</p>
+            <p>Docker</p>
           </div>
         </div>
       </div>
       <div className="cv-container">
-        <p className="tech-container">About Me</p>
-        <p>
+        <h4 className="tech-container"><strong>About Me</strong></h4>
+        <p className="about-me-text">
           I'm a self-taught web developer with a passion for creating beautiful
           and functional websites. I've been working in the industry for the
           past 5 years, and I've had the opportunity to work on a wide range of
