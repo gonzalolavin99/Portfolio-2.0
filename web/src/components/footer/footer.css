@@ -1,9 +1,38 @@
 .footer-container {
   color: rgb(0, 0, 0);
   background-color: rgb(189, 189, 189);
+  min-height: 300px;
+  padding: 2rem 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
 }
 
 .section-container {
   display: flex;
   justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.footer-section {
+  margin-bottom: 2rem;
+}
+
+.footer-dropdown {
+  min-width: 200px;
+}
+
+.dropdown-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.footer-copyright {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  text-align: center;
 }

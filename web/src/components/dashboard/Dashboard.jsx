@@ -1,6 +1,6 @@
 import React from "react";
 import "./dashboard.css";
-import foto_cv from "../../../assets/imgs/foto_cv.jpg";
+import foto_cv from "../../assets/imgs/foto_cv.jpg";
 
 const Dashboard = () => {
   return (

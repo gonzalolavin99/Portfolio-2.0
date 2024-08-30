@@ -15,7 +15,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';       
 
-const pages = ['Proyectos', 'Contacto', 'Acerca de mi'];
+const pages = ['Projects', 'Contact', 'About Me'];
 const settings = ['Profile', 'Account','Dashboard', 'Logout'];
 const Bar = () => {
 
@@ -41,7 +41,7 @@ const Bar = () => {
 
     
   return (
-    <AppBar position="static"  sx={{bgcolor:'grey'}} className='appbar'>
+    <AppBar position="static"  sx={{bgcolor:'rgb(189, 189, 189)'}} className='appbar'>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
@@ -134,7 +134,7 @@ const Bar = () => {
 
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+              <IconButton onClick={handleOpenUserMenu} sx={{ p:0, bgcolor:'black' }}>
                 <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
               </IconButton>
             </Tooltip>

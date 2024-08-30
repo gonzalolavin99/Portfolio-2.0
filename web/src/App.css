@@ -3,8 +3,8 @@
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
-  background: linear-gradient(#000, #404040, #737373);
   font-family: var(--font-libre_franklin), sans-serif;
+  border: 1px solid black;
 }
 
 body {
