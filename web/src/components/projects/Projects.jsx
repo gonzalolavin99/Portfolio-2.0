@@ -16,7 +16,7 @@ const Projects = () => {
       id: 2,
       title: "Project 1",
       description: "A web application that helps users manage their tasks and projects.",
-      link: "#" 
+      link: "https://jr-michelson.vercel.app/" 
     },
     {
       id: 3,
