@@ -1,26 +1,21 @@
 //Importaciones 
 const express = require ('express');
-const dotenv = require ('dotenv');
-const bcrypt = require ('bcryptjs');
-const jwt = require ('jsonwebtoken');
-const {Pool} = require ('pg');
+const bodyParser = require('body-parser');
+const contactRoutes = require('./src/routes/contactRoutes');
+const sequelize = require('./src/config/db');
 
 
 const app = express();
 
-dotenv.config();
+app.use(bodyParser.json());
+app.use('/api/contact', contactRoutes);
 
-//Middlewares
-app.use(express.json());
+//Sincronizar con la base de datos
+sequelize.sync()
+.then(() => console.log('Database ON!'))
+.catch(err => console.error('Something went wrong with the Database :('));
 
-//Rutas
-app.get("/", (req,res)=>{
-    res.send("Hello World");
-});
-
-app.get("/perfil", (req,res)=>{
-    res.send("Gonzalo")
-});
+module.exports = app;
 
 app.listen(3000, console.log("Servidor iniciado!"));
 
