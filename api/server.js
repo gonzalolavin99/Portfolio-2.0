@@ -1,12 +1,14 @@
 require("dotenv").config();
-const cors = require('cors');
-
-const app = require("./index.js");
-app.use(cors());
-
+const app = require("./src/app.js");
+const sequelize = require('./src/config/db');
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+sequelize.sync()
+  .then(() => {
+    console.log('Database ON!');
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+  })
+  .catch(err => console.error('Something went wrong with the Database :(', err));
