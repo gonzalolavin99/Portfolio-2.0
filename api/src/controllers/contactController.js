@@ -1,40 +1,46 @@
 const Contact = require('../models/contactModel.js');
 const { sendEmail } = require('../services/emailService');
-const { sendWhatsApp } = require('../services/whatsappService');
+const { sendWhatsApp } = require('../services/whatsappServices.js');
 const sequelize = require('../config/db');
 
 exports.submitContact = async (req, res) => {
+  console.log('Datos recibidos:', req.body);
   const t = await sequelize.transaction();
 
   try {
-    const { name, company, email, message } = req.body;
+    const { name, email, company, phone, message } = req.body;
 
-    // Validación básica
-    if (!name || !email || !message) {
-      return res.status(400).json({ message: 'Name, email, and message are required' });
+    // Validación
+    if (!name || !email || !phone || !message) {
+      console.log('Validación fallida:', { name, email, phone, message });
+      return res.status(400).json({ message: 'Please fill in all required fields' });
     }
 
-    // Crear el contacto
-    const contact = await Contact.create({ name, company, email, message }, { transaction: t });
+    console.log('Creando contacto...');
+    const contact = await Contact.create({ name, email, company, phone, message }, { transaction: t });
+    console.log('Contacto creado:', contact);
 
-    // Enviar email
+    console.log('Enviando email...');
     await sendEmail(
       process.env.YOUR_EMAIL,
       'Nuevo formulario de contacto',
-      `Nombre: ${name}\nEmpresa: ${company}\nEmail: ${email}\nMensaje: ${message}`
+      `Nombre: ${name}\nEmpresa: ${company || 'No especificada'}\nEmail: ${email}\nTeléfono: ${phone}\nMensaje: ${message}`
     );
+    console.log('Email enviado');
 
-    // Enviar WhatsApp
+    console.log('Enviando WhatsApp...');
     await sendWhatsApp(
       process.env.YOUR_WHATSAPP,
-      `Nuevo contacto:\nNombre: ${name}\nEmpresa: ${company}\nEmail: ${email}\nMensaje: ${message}`
+      `Someone is trying to connect with you:\nNombre: ${name}\nEmpresa: ${company || 'No especificada'}\nEmail: ${email}\nTeléfono: ${phone}\nMensaje: ${message}`
     );
+    console.log('WhatsApp enviado');
 
     await t.commit();
-    res.status(201).json({ message: 'Formulario enviado con éxito', contact });
+    console.log('Transaction ok!');
+    res.status(201).json({ message: 'Form successfully sent', contact });
   } catch (error) {
     await t.rollback();
     console.error('Error al procesar el formulario:', error);
-    res.status(500).json({ message: 'Error al procesar el formulario' });
+    res.status(500).json({ message: 'Error al procesar el formulario', error: error.message });
   }
 };

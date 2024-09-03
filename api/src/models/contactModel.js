@@ -1,30 +1,30 @@
-// Importing the DataTypes module from Sequelize, which provides different data types for defining model attributes
-const { DataTypes } = require("sequelize");
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/db');
 
-// Importing the sequelize instance that was configured in the "../config/db" file
-const sequelize = require("../config/db");
-
-// Defining a Sequelize model named "Contact"
-const Contact = sequelize.define("Contact", {
+const Contact = sequelize.define('Contact', {
   name: {
-    type: DataTypes.STRING(100),
-    allowNull: false,
-  },
-  company: {
-    type: DataTypes.STRING(100),
+    type: DataTypes.STRING,
+    allowNull: false
   },
   email: {
-    type: DataTypes.STRING(100),
+    type: DataTypes.STRING,
     allowNull: false,
+    validate: {
+      isEmail: true
+    }
+  },
+  company: {
+    type: DataTypes.STRING,
+    allowNull: true
   },
   phone: {
-    type: DataTypes.STRING(20),
-    allowNull: false,
+    type: DataTypes.STRING,
+    allowNull: false
   },
   message: {
     type: DataTypes.TEXT,
-    allowNull: false,
-  },
+    allowNull: false
+  }
 });
 
 module.exports = Contact;

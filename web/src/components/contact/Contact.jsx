@@ -1,50 +1,40 @@
 import React from "react";
-import "./contact.css";
-import { Button, Form, Input } from "antd";
+import { Form, Input, Button } from "antd";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { WhatsAppOutlined, MailOutlined } from "@ant-design/icons";
 
-const layout = {
-  labelCol: { span: 8 },
-  wrapperCol: { span: 16 },
+const openWhatsApp = () => {
+  window.open("https://wa.me/56992363770", "_blank");
 };
 
-const validateMessages = {
-  required: "${label} is required!",
-  types: {
-    email: "${label} is not a valid email!",
-  },
+const openGmail = () => {
+  window.open("mailto:gonzalolavin99@gmail.com", "_blank");
 };
 
 const Contact = () => {
   const onFinish = async (values) => {
     try {
-      const response = await fetch('http://localhost:3000/api/contact/submit', {
-        method: 'POST',
+      const response = await fetch("http://localhost:3000/api/contact/submit", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(values.user),
+        body: JSON.stringify(values),
       });
-      const data = await response.json();
-      if (response.ok) {
-        toast.success("Form submitted successfully!");
-      } else {
-        toast.error(data.message || "Error submitting form");
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      toast.error("An error occurred while submitting the form");
-    }};
 
-    const openWhatsApp = () => {
-      window.open('https://wa.me/+56992363770', '_blank');
-    };
-  
-    const openGmail = () => {
-      window.open('mailto:gonzalolavin99@gmail.com', '_blank');
-    };
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Error en la solicitud");
+      }
+
+      const data = await response.json();
+      console.log("Server response:", data);
+      toast.success("Form successfully sent");
+    } catch (error) {
+      console.error("Error al enviar el formulario:", error);
+      toast.error(error.message || "Error al enviar el formulario");
+    }
+  };
 
   return (
     <div className="contact-container">
@@ -67,54 +57,47 @@ const Contact = () => {
           </Button>
         </div>
       </div>
+
       <div className="contact-form">
-        <Form
-          {...layout}
-          name="nest-messages"
-          onFinish={onFinish}
-          style={{ maxWidth: 500 }}
-          validateMessages={validateMessages}
-        >
+        <Form onFinish={onFinish}>
           <Form.Item
-            name={["user", "name"]}
-            label="Name"
-            rules={[{ required: true }]}
+            name="name"
+            rules={[{ required: true, message: "Please enter your name" }]}
           >
-            <Input />
-          </Form.Item>
-          <Form.Item name={["user", "company"]} label="Company Name">
-            <Input />
+            <Input placeholder="Name" />
           </Form.Item>
           <Form.Item
-            name={["user", "email"]}
-            label="Email"
-            rules={[{ required: true, type: "email" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name={["user", "phone"]}
-            label="Phone"
+            name="email"
             rules={[
               {
                 required: true,
-                pattern: /^\+\d{1,3}\d{4,14}$/,
-                message: "Please enter a valid phone number",
+                type: "email",
+                message: "Please enter a valid email format",
               },
             ]}
           >
-            <Input />
+            <Input placeholder="Email" />
+          </Form.Item>
+          <Form.Item name="company">
+            <Input placeholder="Company (optional)" />
           </Form.Item>
           <Form.Item
-            name={["user", "introduction"]}
-            label="Message"
-            rules={[{ required: true }]}
+            name="phone"
+            rules={[
+              { required: true, message: "Please enter your phone number" },
+            ]}
           >
-            <Input.TextArea />
+            <Input placeholder="Phone" />
           </Form.Item>
-          <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
+          <Form.Item
+            name="message"
+            rules={[{ required: true, message: "Please enter your message" }]}
+          >
+            <Input.TextArea placeholder="Message" />
+          </Form.Item>
+          <Form.Item>
             <Button className="form-btn" htmlType="submit">
-              Submit
+              Enviar
             </Button>
           </Form.Item>
         </Form>
