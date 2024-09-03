@@ -18,22 +18,33 @@ const validateMessages = {
 };
 
 const Contact = () => {
-  const onFinish = (values) => {
-    console.log(values);
-    if (values.user.name && values.user.email && values.user.introduction) {
-      toast.success("Form submitted successfully!");
-    } else {
-      toast.error("Please fill in all required fields!");
-    }
-  };
+  const onFinish = async (values) => {
+    try {
+      const response = await fetch('http://localhost:3000/api/contact/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values.user),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        toast.success("Form submitted successfully!");
+      } else {
+        toast.error(data.message || "Error submitting form");
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error("An error occurred while submitting the form");
+    }};
 
-  const openWhatsApp = () => {
-    window.open("https://wa.me/56992363770", "_blank");
-  };
-
-  const openGmail = () => {
-    window.open("mailto:gonzalolavin99@gmail.com", "_blank");
-  };
+    const openWhatsApp = () => {
+      window.open('https://wa.me/+56992363770', '_blank');
+    };
+  
+    const openGmail = () => {
+      window.open('mailto:gonzalolavin99@gmail.com', '_blank');
+    };
 
   return (
     <div className="contact-container">
