@@ -35,15 +35,22 @@ const menuItems = {
   ],
 };
 
+const externalLinks = {
+  whatsapp: "https://wa.me/56992363770",
+  email: "mailto:gonzalolavin99@gmail.com",
+  instagram: "https://www.instagram.com/gonzalolavin99",
+  github: "https://github.com/gonzalolavin99",
+};
+
 const Footer = () => {
   const handleMenuClick = (e, section) => {
-    console.log('Clicked menu item:', e.key);
-    if (section === 'contacto') {
-      if (e.key === 'whatsapp') {
-        window.open('https://wa.me/56992363770', '_blank');
-      } else if (e.key === 'email') {
-        window.open('mailto:gonzalolavin99@gmail.com', '_blank');
-      }
+    console.log("Clicked menu item:", e.key);
+
+    const url = externalLinks[e.key];
+    if (url) {
+      window.open(url, "_blank");
+    }else{
+      console.log("No url found for key:", e.key);
     }
   };
 
@@ -57,13 +64,18 @@ const Footer = () => {
                 overlay={
                   <Menu onClick={(e) => handleMenuClick(e, section)}>
                     {items.map((item) => (
-                      <Menu.Item key={item.key} icon={item.icon}>{item.label}</Menu.Item>
+                      <Menu.Item key={item.key} icon={item.icon}>
+                        {item.label}
+                      </Menu.Item>
                     ))}
                   </Menu>
                 }
-                trigger={['click']}
+                trigger={["click"]}
               >
-                <a onClick={(e) => e.preventDefault()} className="footer-dropdown">
+                <a
+                  onClick={(e) => e.preventDefault()}
+                  className="footer-dropdown"
+                >
                   <Space className="dropdown-title">
                     {section.charAt(0).toUpperCase() + section.slice(1)}
                     <DownOutlined />
@@ -74,7 +86,10 @@ const Footer = () => {
           ))}
         </div>
         <div className="footer-copyright">
-          <p>&copy; {new Date().getFullYear()} Tu Nombre. Todos los derechos reservados.</p>
+          <p>
+            &copy; {new Date().getFullYear()} Gonzalo Lavín. Todos los derechos
+            reservados.
+          </p>
         </div>
       </div>
     </footer>

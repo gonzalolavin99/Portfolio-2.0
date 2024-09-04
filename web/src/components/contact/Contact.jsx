@@ -2,6 +2,7 @@ import React from "react";
 import { Form, Input, Button } from "antd";
 import { ToastContainer, toast } from "react-toastify";
 import { WhatsAppOutlined, MailOutlined } from "@ant-design/icons";
+import './contact.css'
 
 const openWhatsApp = () => {
   window.open("https://wa.me/56992363770", "_blank");

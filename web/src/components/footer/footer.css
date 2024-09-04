@@ -31,8 +31,11 @@
 }
 
 .footer-copyright {
-  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+ align-content: end;
+  margin-top: 10rem;
   padding-top: 2rem;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
-  text-align: center;
+ 
 }
