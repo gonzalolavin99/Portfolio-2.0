@@ -8,8 +8,8 @@ router.post('/submit', validateContact, contactController.submitContact);
 // Ruta de prueba
 
 router.post('/test', (req, res) => {
-    console.log('Datos recibidos:', req.body);
-    res.status(200).json({ message: 'Prueba exitosa', data: req.body });
+    console.log('Data received:', req.body);
+    res.status(200).json({ message: 'Test OK!', data: req.body });
   });
 
 module.exports = router;

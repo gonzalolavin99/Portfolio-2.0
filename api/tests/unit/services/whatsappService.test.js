@@ -1,4 +1,4 @@
-const { sendWhatsApp } = require('../../../src/services/whatsappService');
+const { sendWhatsApp } = require('../../../src/services//whatsappServices.js');
 
 describe('WhatsApp Service', () => {
   test('sendWhatsApp function exists', () => {

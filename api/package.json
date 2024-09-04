@@ -4,15 +4,18 @@
   "main": "server.js",
   "scripts": {
     "test": "jest",
+    "test:integration": "jest tests/integration",
     "start": "node  index.js",
     "dev": "nodemon index.js"
-    },
-    "jest": {
-      "testEnvironment": "node",
-      "coveragePathIgnorePatterns": [
-        "/node_modules/"
-      ]
-    },
+  },
+ "jest": {
+    "testEnvironment": "node",
+    "setupFilesAfterEnv": ["./jest.setup.js"],
+    "globalTeardown": "./jest.teardown.js",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ]
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
