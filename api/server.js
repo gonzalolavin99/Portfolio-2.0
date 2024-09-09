@@ -4,11 +4,15 @@ const sequelize = require('./src/config/db.js');
 
 const PORT = process.env.PORT || 3000;
 
-sequelize.sync()
+sequelize.authenticate()
   .then(() => {
-    console.log('Database ON!');
+    console.log('Database connection has been established successfully.');
+    return sequelize.sync();
+  })
+  .then(() => {
+    console.log('Database synchronized');
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
     });
   })
-  .catch(err => console.error('Something went wrong with the Database :(', err));
+  .catch(err => console.error('Unable to connect to the database:', err));
