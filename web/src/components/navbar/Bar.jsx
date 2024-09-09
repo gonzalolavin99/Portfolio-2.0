@@ -1,4 +1,3 @@
-
 import * as React from 'react';
 import './Bar.css'
 import AppBar from '@mui/material/AppBar';
@@ -13,43 +12,48 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';       
+import CasinoIcon from '@mui/icons-material/Casino'; // This will be our Joker card icon
 
 const pages = ['Projects', 'Contact', 'About Me'];
-const settings = ['Profile', 'Account','Dashboard', 'Logout'];
+const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+
 const Bar = () => {
+  const [anchorElNav, setAnchorElNav] = React.useState(null);
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
 
+  const handleOpenNavMenu = (event) => {
+    setAnchorElNav(event.currentTarget);
+  };
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
 
-  
-    const [anchorElNav, setAnchorElNav] = React.useState(null);
-    const [anchorElUser, setAnchorElUser] = React.useState(null);
-  
-    const handleOpenNavMenu = (event) => {
-      setAnchorElNav(event.currentTarget);
-    };
-    const handleOpenUserMenu = (event) => {
-      setAnchorElUser(event.currentTarget);
-    };
-  
-    const handleCloseNavMenu = () => {
-      setAnchorElNav(null);
-    };
-  
-    const handleCloseUserMenu = () => {
-      setAnchorElUser(null);
-    };
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
 
-    
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+
+  const handleScrollTo = (id) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+    handleCloseNavMenu();
+  };
+
   return (
-    <AppBar position="static"  sx={{bgcolor:'rgb(189, 189, 189)'}} className='appbar'>
+    <AppBar position="static" sx={{bgcolor:'rgb(189, 189, 189)'}} className='appbar'>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+          <CasinoIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1, color: 'black' }} />
           <Typography
             variant="h6"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href="#"
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -93,13 +97,13 @@ const Bar = () => {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                <MenuItem key={page} onClick={() => handleScrollTo(page.toLowerCase())}>
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+          <CasinoIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1, color: 'black' }} />
           <Typography
             variant="h5"
             noWrap
@@ -122,10 +126,15 @@ const Bar = () => {
             {pages.map((page) => (
               <Button
                 key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'black', display: 'block', '&:hover':{
-                  backgroundColor:"#5C5C5C"
-                } }}
+                onClick={() => handleScrollTo(page.toLowerCase())}
+                sx={{ 
+                  my: 2, 
+                  color: 'black', 
+                  display: 'block', 
+                  '&:hover': {
+                    backgroundColor: "#5C5C5C"
+                  } 
+                }}
               >
                 {page}
               </Button>
@@ -167,4 +176,4 @@ const Bar = () => {
   )
 }
 
-export default Bar
+export default Bar;
