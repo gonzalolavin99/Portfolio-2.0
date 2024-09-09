@@ -4,6 +4,8 @@ import { ToastContainer, toast } from "react-toastify";
 import { WhatsAppOutlined, MailOutlined } from "@ant-design/icons";
 import './contact.css'
 
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://portfolio-2-0-h1j4.onrender.com";
+
 const openWhatsApp = () => {
   window.open("https://wa.me/56992363770", "_blank");
 };
@@ -15,7 +17,7 @@ const openGmail = () => {
 const Contact = () => {
   const onFinish = async (values) => {
     try {
-      const response = await fetch("http://localhost:3000/api/contact/submit", {
+      const response = await fetch(`${BACKEND_URL}/api/contact/submit`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
