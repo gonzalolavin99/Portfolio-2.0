@@ -1,4 +1,9 @@
-.appbar{
+.appbar {
     font-family: var(--font-libre_franklin), sans-serif;
+}
 
+@media (max-width: 600px) {
+    .appbar .MuiToolbar-root {
+        justify-content: space-between;
+    }
 }
