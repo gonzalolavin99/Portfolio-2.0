@@ -2,7 +2,10 @@ import React from "react";
 import { Form, Input, Button } from "antd";
 import { ToastContainer, toast } from "react-toastify";
 import { WhatsAppOutlined, MailOutlined } from "@ant-design/icons";
-import './contact.css'
+import 'react-toastify/dist/ReactToastify.css';
+import './contact.css';
+import './toastify-custom.css';
+
 
 const BACKEND_URL = "https://portfolio-2-0-h1j4.onrender.com";
 
@@ -28,15 +31,31 @@ const Contact = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || "Error en la solicitud");
+        throw new Error(errorData.message || "Error in the request");
       }
 
       const data = await response.json();
       console.log("Server response:", data);
-      toast.success("Form successfully sent");
+      toast.success("Thank you for your message! I'll be in touch soon.", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     } catch (error) {
-      console.error("Error al enviar el formulario:", error);
-      toast.error(error.message || "Error al enviar el formulario");
+      console.error("Error sending the form:", error);
+      toast.error("An error occurred while sending the form. Please try again later.", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
 
