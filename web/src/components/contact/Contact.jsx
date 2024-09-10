@@ -4,7 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { WhatsAppOutlined, MailOutlined } from "@ant-design/icons";
 import './contact.css'
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://portfolio-2-0-h1j4.onrender.com";
+const BACKEND_URL = "https://portfolio-2-0-h1j4.onrender.com/";
 
 const openWhatsApp = () => {
   window.open("https://wa.me/56992363770", "_blank");
