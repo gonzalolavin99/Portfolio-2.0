@@ -7,10 +7,20 @@ const errorHandler = require('./middlewares/errorHandler');
 
 const app = express();
 
+
+const allowedOrigins = ["http://localhost:5173", process.env.FRONTEND_URL];
 // Configuración de CORS
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173', 
-  optionsSuccessStatus: 200
+  origin: (origin, callback) => {
+    console.log("Se esta validando el siguiente origin: "+origin)
+    if (allowedOrigins.find((o) => o == origin) || env().isLocal) {
+    
+      callback(null, true);
+    } else {
+      
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
 };
 
 app.use(cors(corsOptions));
