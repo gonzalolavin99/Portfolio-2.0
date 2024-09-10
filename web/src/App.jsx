@@ -5,21 +5,20 @@ import Dashboard from './components/dashboard/Dashboard';
 import Projects from './components/projects/Projects';
 import Contact from './components/contact/Contact'
 import Footer from './components/footer/Footer'
-import 'antd/dist/reset.css'; // Importa el CSS de Ant Design
-
-
-        
+import 'antd/dist/reset.css';
 
 function App() {
-
   return (
     <>
-   
-    <Bar/>
-    <Dashboard/>
-    <Projects/>
-    <Contact/>
-    <Footer/>
+      <Bar/>
+      <Dashboard id="about-me"/>
+      <div id="projects">
+        <Projects/>
+      </div>
+      <div id="contact">
+        <Contact/>
+      </div>
+      <Footer/>
     </>
   )
 }
