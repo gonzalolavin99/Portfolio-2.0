@@ -10,12 +10,12 @@ const allowedOrigins = ["http://localhost:5173", "https://gonzalo-lavin.vercel.a
 
 // Configuración de CORS
 const corsOptions = {
-  origin: (origin, callback) => {
+  origin: function (origin, callback) {
     console.log("Se esta validando el siguiente origin: " + origin);
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
-      callback(new Error("Not allowed by CORS"));
+      callback(new Error('Not allowed by CORS'));
     }
   },
   optionsSuccessStatus: 200
@@ -23,6 +23,12 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
+
+// Ruta raíz
+app.get('/', (req, res) => {
+  res.send('Backend API is running');
+});
+
 app.use('/api/contact', contactRoutes);
 
 // Middleware error handler

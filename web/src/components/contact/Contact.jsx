@@ -17,7 +17,8 @@ const openGmail = () => {
 const Contact = () => {
   const onFinish = async (values) => {
     try {
-      const response = await fetch(`${BACKEND_URL}api/contact/submit`, {
+      console.log('Sending request to:', `${BACKEND_URL}/api/contact/submit`);
+      const response = await fetch(`${BACKEND_URL}/api/contact/submit`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
