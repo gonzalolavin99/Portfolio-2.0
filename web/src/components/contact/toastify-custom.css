@@ -4,7 +4,8 @@
   }
   
   .Toastify__toast--success {
-    background-color: #4caf50;
+    background-color: #000000;
+    color: white;
   }
   
   .Toastify__toast--error {

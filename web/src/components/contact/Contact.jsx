@@ -4,8 +4,6 @@ import { ToastContainer, toast } from "react-toastify";
 import { WhatsAppOutlined, MailOutlined } from "@ant-design/icons";
 import 'react-toastify/dist/ReactToastify.css';
 import './contact.css';
-import './toastify-custom.css';
-
 
 const BACKEND_URL = "https://portfolio-2-0-h1j4.onrender.com";
 
@@ -18,6 +16,8 @@ const openGmail = () => {
 };
 
 const Contact = () => {
+  const [form] = Form.useForm();
+
   const onFinish = async (values) => {
     try {
       console.log('Sending request to:', `${BACKEND_URL}/api/contact/submit`);
@@ -45,6 +45,9 @@ const Contact = () => {
         draggable: true,
         progress: undefined,
       });
+      
+      // Resetear el formulario
+      form.resetFields();
     } catch (error) {
       console.error("Error sending the form:", error);
       toast.error("An error occurred while sending the form. Please try again later.", {
@@ -61,7 +64,17 @@ const Contact = () => {
 
   return (
     <div className="contact-container">
-      <ToastContainer position="top-right" autoClose={3000} />
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <div className="contact-content">
         <div className="contact-title">
           <h1>
@@ -83,7 +96,7 @@ const Contact = () => {
         </div>
 
         <div className="contact-form">
-          <Form onFinish={onFinish} layout="vertical">
+          <Form form={form} onFinish={onFinish} layout="vertical">
             <Form.Item
               name="name"
               rules={[{ required: true, message: "Please enter your name" }]}
