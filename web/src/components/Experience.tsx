@@ -1,120 +1,113 @@
-import { Briefcase } from 'lucide-react'
+import { useState } from 'react'
+import { jobs, ui, type SubProject } from '../content'
+import { usePrefs } from '../lib/prefs'
+import { Reveal } from '../lib/motion'
+import { SectionHead } from './SectionHead'
 
-interface Job {
-  title: string
-  company: string
-  location: string
-  period: string
-  current?: boolean
-  bullets: string[]
-  tech: string[]
-}
-
-const jobs: Job[] = [
-  {
-    title: 'Software Engineer',
-    company: 'Switch S.A.',
-    location: 'Santiago, Chile',
-    period: 'Oct 2024 — Present',
-    current: true,
-    bullets: [
-      'Designed centralized authentication middleware with Node.js, OAuth 2.0 and Redis, reducing session validation time by 40%.',
-      'Led multichannel virtual assistant integration with IBM Watson, automating 60%+ of recurring support queries.',
-      'Built FlexGPT, an AI chatbot with semantic search and LLM integration, improving first-contact resolution.',
-      'Evolved ERP WyseFlow interfaces with React and TypeScript, implementing reusable components and real-time validations.',
-      'Implemented real-time hospital monitoring platform using WebSockets for patient and medical asset visualization.',
-      'Developed Python microservices for data processing and transformation, improving pipeline performance.',
-    ],
-    tech: ['React', 'TypeScript', 'Node.js', 'Python', 'Redis', 'IBM Watson', 'OpenAI', 'WebSockets', 'Docker'],
-  },
-  {
-    title: 'Full Stack Developer',
-    company: 'MonteBlanco SPA',
-    location: 'Santiago, Chile',
-    period: 'Aug 2024 — Sep 2024',
-    bullets: [
-      'Built key features for a warehouse & inventory ERP, improving operational efficiency and real-time stock control.',
-      'Created reusable React/TypeScript components, reducing development time for new modules.',
-      'Implemented scalable backend architecture with NestJS following Clean Architecture principles.',
-      'Designed and optimized PostgreSQL schemas ensuring referential integrity and efficient queries.',
-    ],
-    tech: ['React', 'TypeScript', 'NestJS', 'PostgreSQL', 'Clean Architecture'],
-  },
-  {
-    title: 'Full Stack Developer',
-    company: 'JrMichelson SPA',
-    location: 'Santiago, Chile',
-    period: 'Jan 2024 — Jul 2024',
-    bullets: [
-      'Developed full-stack transactional platform for online raffles with integrated payment system.',
-      'Built responsive frontend with React and backend services with Node.js/Express.',
-      'Integrated electronic payments via Khipu using .NET services for secure transactions.',
-    ],
-    tech: ['React', 'Node.js', 'Express', 'PostgreSQL', '.NET', 'Khipu'],
-  },
-]
-
-export function Experience() {
+function ProjectRow({ project, index, open, onToggle }: { project: SubProject; index: number; open: boolean; onToggle: () => void }) {
+  const { t } = usePrefs()
+  const id = `xp-${project.name.replace(/\W+/g, '-').toLowerCase()}`
   return (
-    <section id="experience" className="py-20 sm:py-28 px-4">
-      <div className="max-w-4xl mx-auto">
-        <h2 className="text-3xl sm:text-4xl font-bold text-center mb-4">Experience</h2>
-        <p className="text-text-secondary dark:text-text-dark-secondary text-center max-w-2xl mx-auto mb-16">
-          Professional journey building enterprise software and AI-powered solutions.
-        </p>
-
-        <div className="relative">
-          <div className="absolute left-6 top-2 bottom-2 w-px bg-border dark:bg-border-dark hidden sm:block" />
-
-          <div className="space-y-10">
-            {jobs.map((job, i) => (
-              <div key={i} className="relative sm:pl-16">
-                <div className="hidden sm:flex absolute left-3.5 top-1 w-5 h-5 rounded-full border-2 border-primary bg-white dark:bg-surface-dark items-center justify-center">
-                  {job.current && <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />}
-                </div>
-
-                <div className="p-6 rounded-2xl bg-white dark:bg-surface-dark-alt border border-border dark:border-border-dark hover:border-primary/30 dark:hover:border-primary/30 hover:shadow-lg transition-all duration-300">
-                  <div className="flex flex-wrap items-start justify-between gap-2 mb-3">
-                    <div>
-                      <h3 className="text-lg font-semibold">{job.title}</h3>
-                      <div className="flex items-center gap-2 text-sm text-text-secondary dark:text-text-dark-secondary">
-                        <Briefcase size={14} />
-                        <span>{job.company}</span>
-                        <span className="text-border dark:text-border-dark">|</span>
-                        <span>{job.location}</span>
-                      </div>
-                    </div>
-                    <span className={`text-xs font-medium px-3 py-1 rounded-full ${
-                      job.current
-                        ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
-                        : 'bg-slate-100 dark:bg-slate-800 text-text-secondary dark:text-text-dark-secondary'
-                    }`}>
-                      {job.period}
-                    </span>
-                  </div>
-
-                  <ul className="space-y-2 mb-4">
-                    {job.bullets.map((bullet, j) => (
-                      <li key={j} className="text-sm text-text-secondary dark:text-text-dark-secondary leading-relaxed flex gap-2">
-                        <span className="text-primary mt-1.5 shrink-0">&#8226;</span>
-                        {bullet}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <div className="flex flex-wrap gap-2">
-                    {job.tech.map(t => (
-                      <span key={t} className="text-xs px-2.5 py-1 rounded-lg bg-primary/5 dark:bg-primary/10 text-primary font-medium">
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ))}
+    <li className="border-t border-line">
+      <button
+        onClick={onToggle}
+        aria-expanded={open}
+        aria-controls={id}
+        className="group w-full grid grid-cols-[2rem_1fr_auto] sm:grid-cols-[3rem_1fr_1fr_auto] items-baseline gap-3 py-5 text-left"
+      >
+        <span className="font-mono text-[11px] text-muted">{String(index + 1).padStart(2, '0')}</span>
+        <span className="font-serif text-2xl sm:text-3xl leading-tight transition-[color,transform] duration-500 ease-[var(--ease-out)] group-hover:translate-x-1.5 group-hover:text-accent">
+          {project.name}
+        </span>
+        <span className="hidden sm:block text-sm text-muted">{t(project.context)}</span>
+        <span
+          className={`relative w-3 h-3 shrink-0 transition-transform duration-500 ease-[var(--ease-out)] ${open ? 'rotate-45' : ''}`}
+          aria-hidden="true"
+        >
+          <span className="absolute top-1/2 inset-x-0 h-px bg-ink" />
+          <span className="absolute left-1/2 inset-y-0 w-px bg-ink" />
+        </span>
+      </button>
+      <div id={id} className="accordion" data-open={open}>
+        <div>
+          <div className="sm:pl-[3rem] pb-8 grid lg:grid-cols-[1fr_14rem] gap-6">
+            <ul className="space-y-3">
+              <li className="sm:hidden text-sm text-muted">{t(project.context)}</li>
+              {project.bullets.map((b, i) => (
+                <li key={i} className="flex gap-3 text-[15px] leading-relaxed text-ink/85 text-pretty">
+                  <span className="mt-[0.7em] w-3 h-px bg-accent shrink-0" />
+                  {t(b)}
+                </li>
+              ))}
+            </ul>
+            <p className="font-mono text-[11px] leading-relaxed uppercase tracking-[0.12em] text-muted lg:text-right">{project.stack}</p>
           </div>
         </div>
       </div>
+    </li>
+  )
+}
+
+export function Experience() {
+  const { t } = usePrefs()
+  const [openProject, setOpenProject] = useState<string | null>(jobs[0].projects?.[0]?.name ?? null)
+
+  return (
+    <section id="experience" className="px-5 sm:px-10 py-28 sm:py-40 max-w-[1400px] mx-auto">
+      <SectionHead index="02" label={t(ui.experience.label)} title={t(ui.experience.title)} />
+
+      <ol className="space-y-24 sm:space-y-32">
+        {jobs.map(job => (
+          <li key={job.company} className="grid md:grid-cols-12 gap-8 md:gap-6">
+            <Reveal className="md:col-span-4 md:sticky md:top-28 self-start">
+              <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted flex items-center gap-2">
+                {!job.end && <span className="w-1.5 h-1.5 rounded-full bg-accent" />}
+                {t(job.start)} — {job.end ? t(job.end) : t(ui.experience.present)}
+              </p>
+              <h3 className="mt-4 font-serif text-4xl sm:text-5xl leading-none">{job.company}</h3>
+              <p className="mt-3 text-base">{t(job.role)}</p>
+              <p className="text-sm text-muted">{job.location}</p>
+            </Reveal>
+
+            <div className="md:col-span-8">
+              {job.summary && (
+                <Reveal delay={80}>
+                  <p className="text-xl sm:text-2xl leading-snug mb-10 text-pretty max-w-[38ch]">{t(job.summary)}</p>
+                </Reveal>
+              )}
+              {job.bullets && (
+                <Reveal delay={80}>
+                  <ul className="border-t border-line pt-6 space-y-3">
+                    {job.bullets.map((b, i) => (
+                      <li key={i} className="text-lg sm:text-xl leading-snug text-pretty max-w-[46ch]">
+                        {t(b)}
+                      </li>
+                    ))}
+                  </ul>
+                </Reveal>
+              )}
+              {job.projects && (
+                <Reveal delay={140}>
+                  <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted mb-2">
+                    {job.projects.length} {t(ui.experience.projects)}
+                  </p>
+                  <ul className="border-b border-line">
+                    {job.projects.map((p, i) => (
+                      <ProjectRow
+                        key={p.name}
+                        project={p}
+                        index={i}
+                        open={openProject === p.name}
+                        onToggle={() => setOpenProject(cur => (cur === p.name ? null : p.name))}
+                      />
+                    ))}
+                  </ul>
+                </Reveal>
+              )}
+            </div>
+          </li>
+        ))}
+      </ol>
     </section>
   )
 }

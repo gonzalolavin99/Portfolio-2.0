@@ -1,106 +1,170 @@
-import { useState, useEffect } from 'react'
-import { Menu, X, Moon, Sun } from 'lucide-react'
+import { useEffect, useState, type CSSProperties, type MouseEvent } from 'react'
+import { ui } from '../content'
+import { usePrefs } from '../lib/prefs'
+import { scrollToTarget, setScrollLocked } from '../lib/motion'
 
-interface NavbarProps {
-  isDark: boolean
-  onToggleTheme: () => void
-}
+const SECTIONS = ['about', 'experience', 'work', 'stack', 'contact'] as const
 
-const NAV_LINKS = [
-  { label: 'About', href: '#about' },
-  { label: 'Experience', href: '#experience' },
-  { label: 'Projects', href: '#projects' },
-  { label: 'Skills', href: '#skills' },
-  { label: 'Contact', href: '#contact' },
-]
-
-export function Navbar({ isDark, onToggleTheme }: NavbarProps) {
-  const [isOpen, setIsOpen] = useState(false)
+export function Navbar() {
+  const { t, lang, setLang, isDark, toggleTheme } = usePrefs()
+  const [open, setOpen] = useState(false)
+  const [hidden, setHidden] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [active, setActive] = useState<string>('')
+  const [progress, setProgress] = useState(0)
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20)
-    window.addEventListener('scroll', onScroll)
+    let last = window.scrollY
+    const onScroll = () => {
+      const y = window.scrollY
+      setScrolled(y > 40)
+      setHidden(y > last && y > 400)
+      last = y
+      const max = document.documentElement.scrollHeight - window.innerHeight
+      setProgress(max > 0 ? y / max : 0)
+    }
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  const handleClick = (href: string) => {
-    setIsOpen(false)
-    const el = document.querySelector(href)
-    el?.scrollIntoView({ behavior: 'smooth' })
+  useEffect(() => {
+    const io = new IntersectionObserver(
+      entries => entries.forEach(e => e.isIntersecting && setActive(e.target.id)),
+      { rootMargin: '-45% 0px -50% 0px' },
+    )
+    SECTIONS.forEach(id => {
+      const el = document.getElementById(id)
+      if (el) io.observe(el)
+    })
+    return () => io.disconnect()
+  }, [])
+
+  useEffect(() => {
+    setScrollLocked(open)
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false)
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [open])
+
+  const go = (id: string) => (e: MouseEvent) => {
+    e.preventDefault()
+    setOpen(false)
+    setScrollLocked(false)
+    scrollToTarget(id === 'top' ? 0 : `#${id}`)
+  }
+
+  const onTheme = (e: MouseEvent<HTMLButtonElement>) => {
+    const r = e.currentTarget.getBoundingClientRect()
+    toggleTheme({ x: r.left + r.width / 2, y: r.top + r.height / 2 })
   }
 
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? 'bg-white/80 dark:bg-surface-dark/80 backdrop-blur-lg shadow-sm'
-          : 'bg-transparent'
-      }`}
-    >
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <div className="flex items-center justify-between h-16">
-          <a
-            href="#"
-            onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
-            className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent"
-          >
-            GL
+    <>
+      <div
+        className="fixed top-0 left-0 right-0 h-px z-[55] bg-accent origin-left"
+        style={{ transform: `scaleX(${progress})` }}
+        aria-hidden="true"
+      />
+      <header
+        className={`fixed top-0 inset-x-0 z-50 transition-[transform,background-color,border-color] duration-700 ease-[var(--ease-out)] border-b ${
+          hidden && !open ? '-translate-y-full' : 'translate-y-0'
+        } ${scrolled && !open ? 'bg-bg/80 backdrop-blur-md border-line' : 'border-transparent'}`}
+      >
+        <nav className="mx-auto max-w-[1400px] px-5 sm:px-10 h-16 flex items-center justify-between">
+          <a href="#top" onClick={go('top')} className="enter group flex items-baseline gap-2 relative z-[2]" style={{ '--d': 600 } as CSSProperties}>
+            <span className="font-serif text-2xl leading-none">Gonzalo Lavín</span>
+            <span className="hidden sm:inline font-mono text-[10px] uppercase tracking-[0.18em] text-muted transition-colors group-hover:text-accent">
+              ©{new Date().getFullYear()}
+            </span>
           </a>
 
-          <div className="hidden md:flex items-center gap-1">
-            {NAV_LINKS.map(link => (
-              <button
-                key={link.href}
-                onClick={() => handleClick(link.href)}
-                className="px-3 py-2 text-sm font-medium text-text-secondary dark:text-text-dark-secondary hover:text-primary dark:hover:text-primary transition-colors rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
-              >
-                {link.label}
-              </button>
+          <ul className="hidden md:flex items-center gap-8">
+            {SECTIONS.map((id, i) => (
+              <li key={id} className="enter" style={{ '--d': 650 + i * 60 } as CSSProperties}>
+                <a
+                  href={`#${id}`}
+                  onClick={go(id)}
+                  className={`group flex items-baseline gap-1.5 text-[13px] transition-colors ${active === id ? 'text-ink' : 'text-muted hover:text-ink'}`}
+                >
+                  <span className={`font-mono text-[10px] transition-colors ${active === id ? 'text-accent' : ''}`}>0{i + 1}</span>
+                  <span className="link-u">{t(ui.nav[id])}</span>
+                </a>
+              </li>
             ))}
-            <button
-              onClick={onToggleTheme}
-              className="ml-2 p-2 rounded-lg text-text-secondary dark:text-text-dark-secondary hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-              aria-label="Toggle theme"
-            >
-              {isDark ? <Sun size={18} /> : <Moon size={18} />}
-            </button>
-          </div>
+          </ul>
 
-          <div className="flex md:hidden items-center gap-2">
+          <div className="enter flex items-center gap-1 relative z-[2]" style={{ '--d': 950 } as CSSProperties}>
+            <div className="flex font-mono text-[11px] uppercase tracking-wider" role="group" aria-label="Language">
+              {(['es', 'en'] as const).map(l => (
+                <button
+                  key={l}
+                  onClick={() => setLang(l)}
+                  aria-pressed={lang === l}
+                  className={`px-1.5 py-2 transition-colors ${lang === l ? 'text-ink' : 'text-muted hover:text-ink'}`}
+                >
+                  {l}
+                </button>
+              ))}
+            </div>
             <button
-              onClick={onToggleTheme}
-              className="p-2 rounded-lg text-text-secondary dark:text-text-dark-secondary"
-              aria-label="Toggle theme"
+              onClick={onTheme}
+              aria-label={isDark ? 'Light mode' : 'Dark mode'}
+              className="ml-1 w-9 h-9 grid place-items-center rounded-full hover:bg-bg-2 transition-colors"
             >
-              {isDark ? <Sun size={18} /> : <Moon size={18} />}
+              <span className="relative block w-3.5 h-3.5 rounded-full border border-ink overflow-hidden">
+                <span
+                  className="absolute inset-y-0 left-0 bg-ink transition-[width] duration-700 ease-[var(--ease-out)]"
+                  style={{ width: isDark ? '100%' : '50%' }}
+                />
+              </span>
             </button>
             <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="p-2 rounded-lg text-text-secondary dark:text-text-dark-secondary"
+              onClick={() => setOpen(o => !o)}
+              aria-expanded={open}
               aria-label="Menu"
+              className="md:hidden ml-1 w-9 h-9 grid place-items-center"
             >
-              {isOpen ? <X size={20} /> : <Menu size={20} />}
+              <span className="relative w-5 h-2.5">
+                <span className={`absolute left-0 right-0 h-px bg-ink transition-transform duration-500 ${open ? 'top-1/2 rotate-45' : 'top-0'}`} />
+                <span className={`absolute left-0 right-0 h-px bg-ink transition-transform duration-500 ${open ? 'top-1/2 -rotate-45' : 'bottom-0'}`} />
+              </span>
             </button>
           </div>
-        </div>
-      </div>
+        </nav>
+      </header>
 
-      {isOpen && (
-        <div className="md:hidden bg-white dark:bg-surface-dark border-t border-border dark:border-border-dark">
-          <div className="px-4 py-3 space-y-1">
-            {NAV_LINKS.map(link => (
-              <button
-                key={link.href}
-                onClick={() => handleClick(link.href)}
-                className="block w-full text-left px-3 py-2 text-sm font-medium text-text-secondary dark:text-text-dark-secondary hover:text-primary rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+      <div
+        className="md:hidden fixed inset-0 z-40 bg-bg flex flex-col justify-between px-5 pt-24 pb-8"
+        style={{
+          clipPath: open ? 'inset(0 0 0 0)' : 'inset(0 0 100% 0)',
+          visibility: open ? 'visible' : 'hidden',
+          transition: `clip-path 0.8s cubic-bezier(0.76, 0, 0.24, 1), visibility 0s ${open ? '0s' : '0.8s'}`,
+        }}
+        aria-hidden={!open}
+      >
+        <ul className="space-y-1">
+          {SECTIONS.map((id, i) => (
+            <li key={id} className="overflow-hidden">
+              <a
+                href={`#${id}`}
+                onClick={go(id)}
+                tabIndex={open ? 0 : -1}
+                className="flex items-baseline gap-4 py-1"
+                style={{
+                  transform: open ? 'none' : 'translateY(100%)',
+                  transition: 'transform 0.9s cubic-bezier(0.22, 1, 0.36, 1)',
+                  transitionDelay: open ? `${200 + i * 60}ms` : '0ms',
+                }}
               >
-                {link.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-    </nav>
+                <span className="font-mono text-xs text-accent">0{i + 1}</span>
+                <span className="font-serif text-5xl">{t(ui.nav[id])}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">{t(ui.hero.location)}</p>
+      </div>
+    </>
   )
 }

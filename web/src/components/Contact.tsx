@@ -1,11 +1,58 @@
-import { useState, type FormEvent } from 'react'
-import { Send, MessageCircle, Mail, MapPin } from 'lucide-react'
+import { useState, type ChangeEvent, type CSSProperties, type FormEvent } from 'react'
+import { links, ui } from '../content'
+import { usePrefs } from '../lib/prefs'
+import { Reveal, useInView, useMagnetic } from '../lib/motion'
 
 const BACKEND_URL = 'https://portfolio-2-0-h1j4.onrender.com'
 
+type Status = 'idle' | 'sending' | 'success' | 'error'
+type Field = 'name' | 'email' | 'company' | 'phone' | 'message'
+
+function Input({
+  field,
+  label,
+  value,
+  onChange,
+  type = 'text',
+  required = true,
+  textarea = false,
+}: {
+  field: Field
+  label: string
+  value: string
+  onChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
+  type?: string
+  required?: boolean
+  textarea?: boolean
+}) {
+  const shared =
+    'peer w-full bg-transparent border-0 border-b border-line pt-6 pb-2 text-lg outline-none transition-colors focus:border-ink placeholder-transparent'
+  return (
+    <label className="relative block group">
+      {textarea ? (
+        <textarea name={field} rows={4} required={required} value={value} onChange={onChange} placeholder={label} className={`${shared} resize-none`} />
+      ) : (
+        <input name={field} type={type} required={required} value={value} onChange={onChange} placeholder={label} className={shared} autoComplete={field === 'company' ? 'organization' : field === 'phone' ? 'tel' : field} />
+      )}
+      <span className="pointer-events-none absolute left-0 top-6 text-lg text-muted origin-left transition-all duration-500 ease-[var(--ease-out)] peer-focus:top-0 peer-focus:text-[11px] peer-focus:tracking-[0.14em] peer-focus:uppercase peer-focus:font-mono peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:text-[11px] peer-[:not(:placeholder-shown)]:tracking-[0.14em] peer-[:not(:placeholder-shown)]:uppercase peer-[:not(:placeholder-shown)]:font-mono">
+        {label}
+        {required && <span className="text-accent"> *</span>}
+      </span>
+      <span className="absolute left-0 bottom-0 h-px w-full bg-accent scale-x-0 origin-left transition-transform duration-700 ease-[var(--ease-out)] peer-focus:scale-x-100" />
+    </label>
+  )
+}
+
 export function Contact() {
-  const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
-  const [form, setForm] = useState({ name: '', email: '', company: '', phone: '', message: '' })
+  const { t } = usePrefs()
+  const [status, setStatus] = useState<Status>('idle')
+  const [copied, setCopied] = useState(false)
+  const [form, setForm] = useState<Record<Field, string>>({ name: '', email: '', company: '', phone: '', message: '' })
+  const [titleRef, titleIn] = useInView<HTMLHeadingElement>()
+  const sendRef = useMagnetic<HTMLButtonElement>(0.2)
+
+  const update = (field: Field) => (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+    setForm(prev => ({ ...prev, [field]: e.target.value }))
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -19,78 +66,122 @@ export function Contact() {
       if (!res.ok) throw new Error('Request failed')
       setStatus('success')
       setForm({ name: '', email: '', company: '', phone: '', message: '' })
-      setTimeout(() => setStatus('idle'), 4000)
     } catch {
       setStatus('error')
-      setTimeout(() => setStatus('idle'), 4000)
+    }
+    setTimeout(() => setStatus('idle'), 6000)
+  }
+
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(links.email)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1800)
+    } catch {
+      window.location.href = `mailto:${links.email}`
     }
   }
 
-  const update = (field: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-    setForm(prev => ({ ...prev, [field]: e.target.value }))
-
-  const inputClass = "w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-border dark:border-border-dark focus:border-primary focus:ring-1 focus:ring-primary outline-none text-sm transition-colors"
+  const title = t(ui.contact.title)
 
   return (
-    <section id="contact" className="py-20 sm:py-28 px-4 bg-surface-alt dark:bg-surface-dark-alt">
-      <div className="max-w-6xl mx-auto">
-        <h2 className="text-3xl sm:text-4xl font-bold text-center mb-4">Get in Touch</h2>
-        <p className="text-text-secondary dark:text-text-dark-secondary text-center max-w-2xl mx-auto mb-16">
-          Interested in working together? Let's talk about your project.
-        </p>
+    <section id="contact" className="relative bg-ink text-bg [--surface-ink:var(--ink)] rounded-t-[28px] sm:rounded-t-[48px] overflow-hidden">
+      <div className="px-5 sm:px-10 pt-24 sm:pt-36 pb-20 max-w-[1400px] mx-auto [--line:color-mix(in_oklab,var(--bg)_18%,transparent)] [--muted:color-mix(in_oklab,var(--bg)_55%,transparent)] [--ink:var(--bg)]">
+        <div className="flex items-center gap-4 font-mono text-[11px] uppercase tracking-[0.18em] text-muted mb-10">
+          <span className="text-accent">(05)</span>
+          <span>{t(ui.contact.label)}</span>
+        </div>
 
-        <div className="grid md:grid-cols-5 gap-10">
-          <div className="md:col-span-2 space-y-8">
-            <div className="space-y-6">
-              <ContactInfo icon={Mail} label="Email" value="gonzalolavin99@gmail.com" href="mailto:gonzalolavin99@gmail.com" />
-              <ContactInfo icon={MessageCircle} label="WhatsApp" value="+56 9 9236 3770" href="https://wa.me/56992363770" />
-              <ContactInfo icon={MapPin} label="Location" value="Santiago, Chile" />
-            </div>
-            <div className="flex gap-3">
-              <a href="https://wa.me/56992363770" target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-green-500 hover:bg-green-600 text-white text-sm font-medium transition-colors">
-                <MessageCircle size={16} /> WhatsApp
-              </a>
-              <a href="mailto:gonzalolavin99@gmail.com" className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-border dark:border-border-dark hover:bg-slate-50 dark:hover:bg-slate-800 text-sm font-medium transition-colors">
-                <Mail size={16} /> Email
-              </a>
-            </div>
+        <h2
+          ref={titleRef}
+          data-in={titleIn}
+          aria-label={title}
+          className="font-serif italic leading-[0.85] tracking-[-0.02em] text-[clamp(5rem,20vw,17rem)]"
+        >
+          <span className="line-mask" aria-hidden="true">
+            {[...title].map((ch, i) => (
+              <span key={`${ch}-${i}`} style={{ '--i': i } as CSSProperties}>
+                {ch === ' ' ? ' ' : ch}
+              </span>
+            ))}
+          </span>
+          <span className="not-italic text-accent">.</span>
+        </h2>
+
+        <div className="mt-16 sm:mt-24 grid lg:grid-cols-12 gap-16 lg:gap-6">
+          <div className="lg:col-span-5 space-y-10">
+            <Reveal>
+              <p className="text-xl leading-snug max-w-[30ch] text-bg/85 text-pretty">{t(ui.contact.lede)}</p>
+            </Reveal>
+            <Reveal delay={100}>
+              <div className="flex items-center gap-3 flex-wrap">
+                <a href={`mailto:${links.email}`} className="link-u font-serif text-3xl sm:text-4xl break-all">
+                  {links.email}
+                </a>
+                <button
+                  onClick={copyEmail}
+                  className="font-mono text-[10px] uppercase tracking-[0.16em] border border-line rounded-full px-3 py-1.5 text-muted hover:text-bg hover:border-bg transition-colors"
+                >
+                  {copied ? t(ui.contact.copied) : t(ui.contact.copy)}
+                </button>
+              </div>
+            </Reveal>
+            <Reveal delay={180}>
+              <ul className="border-t border-line">
+                {[
+                  { label: 'WhatsApp', value: links.phone, href: links.whatsapp },
+                  { label: 'LinkedIn', value: 'gonzalo-lavin-cordova', href: links.linkedin },
+                  { label: 'GitHub', value: 'gonzalolavin99', href: links.github },
+                  { label: 'CV', value: 'PDF', href: links.cv },
+                ].map(item => (
+                  <li key={item.label} className="border-b border-line">
+                    <a href={item.href} target="_blank" rel="noopener noreferrer" className="group flex items-center justify-between py-4">
+                      <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted">{item.label}</span>
+                      <span className="flex items-center gap-3 text-[15px]">
+                        <span className="transition-transform duration-500 ease-[var(--ease-out)] group-hover:-translate-x-2">{item.value}</span>
+                        <span className="inline-block transition-transform duration-500 group-hover:-rotate-45 text-accent">→</span>
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
           </div>
 
-          <form onSubmit={handleSubmit} className="md:col-span-3 space-y-4">
-            <div className="grid sm:grid-cols-2 gap-4">
-              <input type="text" placeholder="Name *" required value={form.name} onChange={update('name')} className={inputClass} />
-              <input type="email" placeholder="Email *" required value={form.email} onChange={update('email')} className={inputClass} />
-            </div>
-            <div className="grid sm:grid-cols-2 gap-4">
-              <input type="text" placeholder="Company (optional)" value={form.company} onChange={update('company')} className={inputClass} />
-              <input type="tel" placeholder="Phone *" required value={form.phone} onChange={update('phone')} className={inputClass} />
-            </div>
-            <textarea placeholder="Your message *" required rows={5} value={form.message} onChange={update('message')} className={`${inputClass} resize-none`} />
-            <button type="submit" disabled={status === 'sending'} className="w-full sm:w-auto px-8 py-3 bg-gradient-to-r from-primary to-primary-dark text-white font-medium rounded-xl hover:shadow-lg hover:shadow-primary/25 transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
-              <Send size={16} />
-              {status === 'sending' ? 'Sending...' : 'Send message'}
-            </button>
-            {status === 'success' && <p className="text-sm text-green-600 dark:text-green-400 font-medium">Message sent successfully! I'll get back to you soon.</p>}
-            {status === 'error' && <p className="text-sm text-red-600 dark:text-red-400 font-medium">Something went wrong. Please try again or contact me directly.</p>}
-          </form>
+          <Reveal className="lg:col-span-6 lg:col-start-7" delay={120}>
+            <form onSubmit={handleSubmit} className="space-y-8">
+              <div className="grid sm:grid-cols-2 gap-8">
+                <Input field="name" label={t(ui.contact.name)} value={form.name} onChange={update('name')} />
+                <Input field="email" type="email" label={t(ui.contact.email)} value={form.email} onChange={update('email')} />
+              </div>
+              <div className="grid sm:grid-cols-2 gap-8">
+                <Input field="company" required={false} label={t(ui.contact.company)} value={form.company} onChange={update('company')} />
+                <Input field="phone" type="tel" label={t(ui.contact.phone)} value={form.phone} onChange={update('phone')} />
+              </div>
+              <Input field="message" textarea label={t(ui.contact.message)} value={form.message} onChange={update('message')} />
+
+              <div className="flex flex-wrap items-center gap-6 pt-2">
+                <button
+                  ref={sendRef}
+                  type="submit"
+                  disabled={status === 'sending'}
+                  className="group relative overflow-hidden rounded-full bg-bg text-[color:var(--surface-ink)] hover:text-bg transition-colors duration-500 pl-7 pr-2 py-2 flex items-center gap-4 text-sm disabled:opacity-60"
+                >
+                  <span className="absolute inset-0 bg-accent translate-y-full group-hover:translate-y-0 transition-transform duration-700 ease-[var(--ease-out)] rounded-full" />
+                  <span className="relative">{status === 'sending' ? t(ui.contact.sending) : t(ui.contact.send)}</span>
+                  <span className="relative w-9 h-9 rounded-full bg-[color:var(--surface-ink)] text-bg grid place-items-center transition-transform duration-700 ease-[var(--ease-out)] group-hover:-rotate-45">
+                    {status === 'sending' ? <span className="w-3 h-3 rounded-full border border-current border-t-transparent animate-spin" /> : '→'}
+                  </span>
+                </button>
+                <p role="status" aria-live="polite" className="text-sm min-h-5">
+                  {status === 'success' && <span className="text-bg">{t(ui.contact.success)}</span>}
+                  {status === 'error' && <span className="text-accent">{t(ui.contact.error)}</span>}
+                </p>
+              </div>
+            </form>
+          </Reveal>
         </div>
       </div>
     </section>
   )
-}
-
-function ContactInfo({ icon: Icon, label, value, href }: { icon: typeof Mail; label: string; value: string; href?: string }) {
-  const content = (
-    <div className="flex items-start gap-4">
-      <div className="w-10 h-10 rounded-xl bg-primary/10 dark:bg-primary/20 flex items-center justify-center shrink-0">
-        <Icon size={18} className="text-primary" />
-      </div>
-      <div>
-        <p className="text-xs text-text-secondary dark:text-text-dark-secondary uppercase tracking-wider mb-0.5">{label}</p>
-        <p className="text-sm font-medium">{value}</p>
-      </div>
-    </div>
-  )
-  if (href) return <a href={href} target="_blank" rel="noopener noreferrer" className="block hover:opacity-80 transition-opacity">{content}</a>
-  return content
 }

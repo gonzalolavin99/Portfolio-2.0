@@ -1,28 +1,50 @@
-import { Mail } from 'lucide-react'
-import { GithubIcon, LinkedinIcon, InstagramIcon } from './icons'
-
-const socials = [
-  { icon: GithubIcon, href: 'https://github.com/gonzalolavin99', label: 'GitHub' },
-  { icon: LinkedinIcon, href: 'https://linkedin.com/in/gonzalolavin', label: 'LinkedIn' },
-  { icon: InstagramIcon, href: 'https://www.instagram.com/gonzalolavin99', label: 'Instagram' },
-]
+import { links, ui } from '../content'
+import { usePrefs } from '../lib/prefs'
+import { scrollToTarget, useInView, useLocalTime } from '../lib/motion'
 
 export function Footer() {
+  const { t } = usePrefs()
+  const time = useLocalTime()
+  const [ref, inView] = useInView<HTMLDivElement>({ threshold: 0.3 })
+
   return (
-    <footer className="py-10 px-4 border-t border-border dark:border-border-dark">
-      <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-        <p className="text-sm text-text-secondary dark:text-text-dark-secondary">
-          &copy; {new Date().getFullYear()} Gonzalo Lavin. Built with React & TailwindCSS.
-        </p>
-        <div className="flex items-center gap-3">
-          {socials.map(s => (
-            <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg text-text-secondary dark:text-text-dark-secondary hover:text-primary dark:hover:text-primary hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" aria-label={s.label}>
-              <s.icon size={18} />
-            </a>
-          ))}
-          <a href="mailto:gonzalolavin99@gmail.com" className="p-2 rounded-lg text-text-secondary dark:text-text-dark-secondary hover:text-primary dark:hover:text-primary hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" aria-label="Email">
-            <Mail size={18} />
-          </a>
+    <footer className="bg-ink text-bg overflow-hidden [--line:color-mix(in_oklab,var(--bg)_18%,transparent)]">
+      <div className="px-5 sm:px-10 max-w-[1400px] mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 border-t border-line pt-8 font-mono text-[11px] uppercase tracking-[0.16em]">
+          <div>
+            <p className="opacity-50 mb-2">{t(ui.footer.local)}</p>
+            <p className="tabular-nums">{time} · Santiago</p>
+          </div>
+          <div>
+            <p className="opacity-50 mb-2">Social</p>
+            <ul className="space-y-1">
+              <li><a className="link-u" href={links.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+              <li><a className="link-u" href={links.github} target="_blank" rel="noopener noreferrer">GitHub</a></li>
+              <li><a className="link-u" href={links.whatsapp} target="_blank" rel="noopener noreferrer">WhatsApp</a></li>
+            </ul>
+          </div>
+          <div className="hidden md:block">
+            <p className="opacity-50 mb-2">© {new Date().getFullYear()}</p>
+            <p>{t(ui.footer.made)}</p>
+          </div>
+          <div className="md:text-right">
+            <button onClick={() => scrollToTarget(0)} className="group inline-flex items-center gap-2 uppercase tracking-[0.16em]">
+              <span className="link-u">{t(ui.footer.top)}</span>
+              <span className="inline-block transition-transform duration-500 group-hover:-translate-y-1">↑</span>
+            </button>
+          </div>
+        </div>
+
+        <div ref={ref} data-in={inView} className="pt-16 sm:pt-24" aria-hidden="true">
+          <p
+            className="font-serif leading-[0.75] tracking-[-0.03em] whitespace-nowrap text-[23.5vw] lg:text-[21rem] text-center"
+            style={{
+              transform: inView ? 'translateY(0.12em)' : 'translateY(0.6em)',
+              transition: 'transform 1.6s cubic-bezier(0.22, 1, 0.36, 1)',
+            }}
+          >
+            Lav<span className="italic">ín</span>
+          </p>
         </div>
       </div>
     </footer>
